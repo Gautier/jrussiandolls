@@ -29,6 +29,7 @@
               } else {
                 select.append("<option value=''>" + opts.emptyMsg + "</option>");
               }
+              select.trigger("change");
           }});
         });
         jQuery(this).change();
