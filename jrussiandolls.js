@@ -18,7 +18,7 @@
             success: function(result) {
               var select = opts.child;
               select.empty();
-              if (result.length > 0) {
+              if (result && result.length > 0) {
                 jQuery(result).each(function (dummy) {
                   data = this;
                   if (opts.extractField !== null) {
