@@ -14,6 +14,7 @@
           jQuery.ajax({
             url: opts.url,
             data: params,
+            dataType: opts.dataType,
             success: function(result) {
               var select = opts.child;
               select.empty();
@@ -41,6 +42,7 @@
     paramName: "filter",
     extractField: null,
     labelName: "label",
+    dataType: "json",
     child: null,
     emptyMsg: "No data found"
   };
