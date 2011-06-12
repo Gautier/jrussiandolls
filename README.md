@@ -5,18 +5,19 @@ Requires a recent jQuery
 
 Example usage :
 
-  <script type="text/javascript" src="/jrussiandolls.js"></script>
-  <script type="text/javascript">
-    jQuery(function () {
-        jQuery("select.russian-doll").russiandolls({
-                url: "/study_classes.json", // url on which
-                paramName: "campus",
-                child: jQuery("select.nested-russian-doll"),
-                extractField: "study_class",
-                emptyMsg: "No class found for this campus"
-        });
-    });
-  </script>
+    <script type="text/javascript" src="/jrussiandolls.js"></script>
+    <script type="text/javascript">
+      jQuery(function () {
+          $("#user").russiandolls({
+              url: "http://api.twitter.com/1/statuses/friends.json",
+              paramName: "screen_name",
+              child: jQuery("#friends"),
+              labelName: "screen_name",
+              dataType: "jsonp",
+              emptyMsg: "No friends found for this user :("
+          });
+      });
+    </script>
 
 
 Copyright and license
