@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>jrussiandolls plugin</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="/static/docco.css" />
+  <link rel="stylesheet" media="all" href="/static/pygments.css" />
+  <link rel="stylesheet" media="all" href="/static/facebox.css"/>
+
+  <script type="text/javascript"
+          src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+
+  <script type="text/javascript" src="/src/jrussiandolls.js"></script>
+
+  <script type="text/javascript" src="/static/facebox.js"></script>
+
+  <script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox()
+    }) 
+  </script>
+
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+
+    <div id="jump_to">
+      Jump To &hellip;
+      <div id="jump_wrapper">
+        <div id="jump_page">
+          <a class="source" href="#section-introduction">
+            Introduction
+          </a>
+
+          <a class="source" href="#section-local">
+            Local request
+          </a>
+
+          <a class="source" href="#section-nested">
+            Nested selects!
+          </a>
+
+          <a class="source" href="#section-remote">
+            Remote request
+          </a>
+
+          <a class="source" href="#section-about">
+            About!
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              jrussiandolls
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr id="section-introduction">
+          <td class="docs">
+            <div class="pilwrap">
+              <a class="pilcrow" href="#section-introduction">&#182;</a>
+            </div>
+
+            <h2>Introduction</h2>
+            <p>
+              jrussiandolls is a jQuery plugin plugin to filter a
+              <code>&lt;select&gt;</code> depending on another
+              <code>&lt;select&gt;</code>.
+            </p>
+
+            <p>
+              To install download <a href="">the tarball</a> and add jQuery
+              (>=1.5.1) and jrussiandolls to your page:
+
+              {% include "snippet_header.html" %}
+            </p>
+
+          </td>
+          <td class="code">
+
+          </td>
+        </tr>
+
+        <tr id="section-local">
+          <td class="docs">
+            <div class="pilwrap">
+              <a class="pilcrow" href="#section-local">&#182;</a>
+            </div>
+
+            <h2>Local request</h2>
+
+            <p>With the following Javascript</p>
+
+            {% include "snippet_local.html" %}
+
+            <p>And HTML</p>
+
+            {% include "snippet_local_selects.html" %}
+
+            <p>jrussiandolls will call <code>/rooms.json?id=building1</code>
+               and expect a JSON encoded response similar to:
+
+              {% include "snippet_data.html" %}
+            </p>
+
+          <script type="text/javascript">
+            $(function () {
+                $("#buildings").russiandolls({
+                    url: "/rooms.json",
+                    paramName: "id",
+                    child: jQuery("#rooms"),
+                    labelName: "name",
+                    emptyMsg: "No rooms found in this building"
+                });
+            });
+          </script>
+
+          </td>
+          <td class="code">
+
+            <select id="buildings">
+              <option value="building1">Building 1</option>
+              <option value="building2">Building 2</option>
+              <option value="building3">Building 3 (empty)</option>
+            </select>
+            → (has rooms)
+
+            <select id="rooms">
+            </select>
+
+          </td>
+        </tr>
+
+        <tr id="section-nested">
+          <td class="docs">
+            <div class="pilwrap">
+              <a class="pilcrow" href="#section-nested">&#182;</a>
+            </div>
+
+            <h2>Nested request</h2>
+
+            <p>jrussiandolls can even be nested (hence the name) and don't need
+            the first select to be preloaded</p> 
+
+            <p><a href="/data.png" rel="facebox">View the example data as a
+              tree</a></p>
+
+            {% include "snippet_nested.html" %}
+
+            {% include "snippet_nested_selects.html" %}
+
+            <script type="text/javascript">
+              $(function () {
+                $("#buildings2").russiandolls({
+                    root: true,
+                    url: "/buildings.json",
+                    paramName: "id",
+                    labelName: "name",
+                    emptyMsg: "No building found"
+                });
+
+                $("#buildings2").russiandolls({
+                    url: "/rooms.json",
+                    paramName: "id",
+                    child: jQuery("#rooms2"),
+                    labelName: "name",
+                    emptyMsg: "No rooms found in this building"
+                });
+
+                $("#rooms2").russiandolls({
+                    url: "/cupboards.json",
+                    paramName: "id",
+                    child: jQuery("#cupboards"),
+                    labelName: "name",
+                    emptyMsg: "No cupboards found in this room"
+                });
+              });
+            </script>
+
+          </td>
+          <td class="code">
+
+            <select id="buildings2">
+            </select>
+            → (has rooms)
+
+            <select id="rooms2">
+            </select>
+            → (has cupboards)
+
+            <select id="cupboards">
+            </select>
+
+          </td>
+        </tr>
+
+        <tr id="section-remote">
+          <td class="docs">
+            <div class="pilwrap">
+              <a class="pilcrow" href="#section-remote">&#182;</a>
+            </div>
+
+            <h2>Remote requests</h2>
+
+            <p>
+            To use a third party API like twitter, you must use the
+            <code>dataType</code> option as in the next example.
+
+            See the discussion about <abbr>JSONP</abbr> in the <a
+              href="http://api.jquery.com/jQuery.ajax/">jQuery
+              documentation</a>.
+            </p>
+
+            <tt>Note: only <abbr>JSON</abbr> and <abbr>JSONP</abbr> dataTypes
+              are supported at the moment</tt>
+
+            {% include "snippet_remote.html" %}
+
+            {% include "snippet_remote_selects.html" %}
+
+            <script type="text/javascript">
+              $(function () {
+                $("#user").russiandolls({
+                    url: "http://api.twitter.com/1/statuses/friends.json",
+                    paramName: "screen_name",
+                    child: jQuery("#friends"),
+                    labelName: "screen_name",
+                    loadingIcon: "/static/loading.gif",
+                    dataType: "jsonp",
+                    emptyMsg: "No friends found for this user :("
+                });
+              });
+            </script>
+
+          </td>
+          <td class="code">
+
+            <select id="user">
+              <option value="timoreilly">tim</option>
+              <option value="europython">europython</option>
+              <option value="stephenfry">stephenfry</option>
+            </select>
+            → (follows)
+
+            <select id="friends">
+            </select>
+
+          </td>
+        </tr>
+
+        <tr id="section-about">
+          <td class="docs">
+            <div class="pilwrap">
+              <a class="pilcrow" href="#section-about">&#182;</a>
+            </div>
+
+            <h2>About</h2>
+
+            <p>By <a href="http://github.com/Gautier/">Gautier Hayoun</a></p>
+
+            <p>Released under MIT license, get the source and contribute on <a
+              href="http://github.com/Gautier/jrussiandolls">github</a>.  </p>
+
+            <p>Documentation tools: CSS stolen from <a
+              href="http://jashkenas.github.com/docco/">Docco</a>, syntax
+            highlither provided by <a href="http://pygments.org">pygments</a>,
+            templating engine is <a href="http://jinja.pocoo.org/">Jinja2</a>,
+            hosted by <a href="http://www.cloudfoundry.com/">Cloudfoundry</a>,
+            and json example application made with <a
+              href="http://nodejs.org/">Node.js</a>
+            </p>
+
+          </td>
+          <td class="code">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
+

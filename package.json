@@ -1,0 +1,10 @@
+{
+    "name" : "jrussiandolls-documentation",
+    "description" : "Documentation for the jquery plugin jrussiandolls",
+    "url" : "http://github.com/Gautier/jrussiandolls",
+    "keywords" : ["russian dolls", "jrussiandolls"],
+    "author" : "Gautier Hayoun <ghayoun@gmail.com>",
+    "licenses" : ["MIT"],
+    "dependencies" : ["beeline"],
+    "version" : "0.1.0"
+}
