@@ -6,23 +6,37 @@
  * Released under MIT license (see README)
  */
 (function(jQuery) {
+  var results = {};
+  var waiting = {};
+  var waitingCall = {};
+
   function setupRussianDoll(value, opts) {
     var params = {};
     params[opts.paramName] = value;
     var select = opts.child;
+    var selected = opts.selected;
 
-    jQuery.ajax({
-      url: opts.url,
-      data: params,
-      dataType: opts.dataType,
-    }).success(function(result) {
+    var key = opts.url + "" + value;
+
+    function success(result) {
+        results[key] = result;
+        waiting[key] = false;
+        var callback = function () {};
+        while(callback = waitingCall[key].pop()) {
+          callback(result);
+        }
         select.empty();
         if (result && result.length > 0) {
           jQuery(result).each(function (index, resultData) {
             if (opts.extractField) {
               resultData = resultData[opts.extractField];
             }
-            select.append("<option value=" +resultData.id+ ">"
+            var attrs = "value=" +resultData.id;
+            if (selected && selected == resultData.id) {
+              attrs += " selected='selected'";
+            }
+
+            select.append("<option " + attrs + ">"
                             +resultData[opts.labelName]+"</option>");
           });
         } else {
@@ -30,11 +44,27 @@
         }
         select.trigger("change");
       hideLoading();
-    }).error(function () {
-      select.empty();
-      select.append("<option value=''>" + opts.emptyMsg + "</option>");
-      hideLoading();
-    });
+    }
+
+    if (waiting[key] == true) {
+      waitingCall[key].push(function (result) {
+        success(result);
+      });
+    } else if (results[key]) {
+      success(results[key])
+    } else {
+      waiting[key] = true;
+      waitingCall[key] = [];
+      jQuery.ajax({
+        url: opts.url,
+        data: params,
+        dataType: opts.dataType,
+      }).success(success).error(function () {
+        select.empty();
+        select.append("<option value=''>" + opts.emptyMsg + "</option>");
+        hideLoading();
+      });
+    }
 
     function showLoading() {
       var height = select.height();
@@ -80,6 +110,7 @@
     labelName: "label",
     dataType: "json",
     child: null,
-    emptyMsg: "No data found"
+    emptyMsg: "No data found",
+    selected: null
   };
 })(jQuery);
